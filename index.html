@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#5b21b6">
+    <title>מערכת שעות · נועה, ניר וקארין</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Rubik', sans-serif;
+            background:
+                radial-gradient(ellipse 90% 60% at 8% -10%, rgba(124, 58, 237, 0.12), transparent 50%),
+                radial-gradient(ellipse 70% 50% at 100% 0%, rgba(217, 119, 6, 0.10), transparent 46%),
+                #f4f1eb;
+            color: #1c1917;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .day-nav-btn.active {
+            background: #334155;
+            color: #fff;
+            border-color: #334155;
+            box-shadow: 0 4px 10px rgba(51, 65, 85, 0.25);
+        }
+        .filter-btn.active[data-filter="all"] { background: #334155; color: #fff; border-color: #334155; }
+        .filter-btn.filter-noa { background: #f3e8ff; color: #5b21b6; border-color: #d8b4fe; }
+        .filter-btn.active[data-filter="noa"] { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+        .filter-btn.active[data-filter="noa-school"] { background: #6d28d9; color: #fff; border-color: #6d28d9; }
+        .filter-btn.filter-nir { background: #dbeafe; color: #1e3a8a; border-color: #93c5fd; }
+        .filter-btn.active[data-filter="nir"] { background: #2563eb; color: #fff; border-color: #2563eb; }
+        .filter-btn.active[data-filter="nir-school"] { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+        .filter-btn.filter-karin { background: #ffedd5; color: #9a3412; border-color: #fdba74; }
+        .filter-btn.active[data-filter="karin"] { background: #ea580c; color: #fff; border-color: #ea580c; }
+        .filter-btn.active[data-filter="karin-school"] { background: #c2410c; color: #fff; border-color: #c2410c; }
+        .filter-btn.filter-exams { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+        .filter-btn.active[data-filter="exams"] { background: #d97706; color: #fff; border-color: #d97706; }
+        .filter-btn.filter-holidays { background: #ecfdf5; color: #065f46; border-color: #6ee7b7; }
+        .filter-btn.active[data-filter="holidays"] { background: #059669; color: #fff; border-color: #059669; }
+        .chip-noa { background: #f3e8ff; color: #5b21b6; border-color: #d8b4fe; }
+        .chip-nir { background: #dbeafe; color: #1e3a8a; border-color: #93c5fd; }
+        .chip-karin { background: #ffedd5; color: #9a3412; border-color: #fdba74; }
+        .chip-duty { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+        .name-noa { color: #7c3aed; }
+        .name-nir { color: #2563eb; }
+        .name-karin { color: #ea580c; }
+        .touch { min-height: 44px; touch-action: manipulation; }
+        .tt-cell { min-height: 52px; }
+        .tt-subj-math { background: #dcfce7; }
+        .tt-subj-lang { background: #e0f2fe; }
+        .tt-subj-eng { background: #ede9fe; }
+        .tt-subj-pe { background: #fef9c3; }
+        .tt-subj-sci { background: #e5e7eb; }
+        .tt-subj-art { background: #ffedd5; }
+        .tt-subj-bible { background: #fce7f3; }
+        .tt-subj-values { background: #f3e8ff; }
+        .tt-subj-empty { background: #fafaf9; color: #a8a29e; }
+    </style>
+</head>
+<body class="min-h-screen antialiased">
+    <header class="sticky top-0 z-40 border-b border-stone-200/80 bg-[#f4f1eb]/95 backdrop-blur-md">
+        <div class="max-w-5xl mx-auto px-3 sm:px-5 py-3">
+            <div class="flex flex-wrap items-end justify-between gap-2 mb-3">
+                <div>
+                    <p class="text-[10px] sm:text-xs font-bold tracking-wide text-stone-500">תיכון היובל · תשפ״ז</p>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-stone-900 leading-tight">נועה, ניר וקארין</h1>
+                </div>
+                <div id="today-badge" class="text-xs font-bold px-3 py-1.5 rounded-full bg-slate-700 text-white"></div>
+            </div>
+            <div id="days-bar" class="grid grid-cols-6 gap-1 sm:gap-1.5 mb-2.5"></div>
+            <div class="flex flex-wrap gap-1.5">
+                <button type="button" class="filter-btn active shrink-0 px-3 py-1.5 rounded-full border border-stone-300 text-xs font-bold text-stone-700 touch" data-filter="all">הכל</button>
+                <button type="button" class="filter-btn filter-noa shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="noa">נועה</button>
+                <button type="button" class="filter-btn filter-nir shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="nir">ניר</button>
+                <button type="button" class="filter-btn filter-karin shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="karin">קארין</button>
+                <button type="button" class="filter-btn filter-noa shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="noa-school">מערכת נועה</button>
+                <button type="button" class="filter-btn filter-nir shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="nir-school">מערכת ניר</button>
+                <button type="button" class="filter-btn filter-karin shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="karin-school">מערכת קארין</button>
+                <button type="button" class="filter-btn filter-exams shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="exams">בחינות</button>
+                <button type="button" class="filter-btn filter-holidays shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="holidays">חופשות</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-3 sm:px-5 py-4 sm:py-5" id="schedule-root"></main>
+
+    <footer class="max-w-5xl mx-auto px-3 sm:px-5 pb-8 text-center text-[11px] text-stone-500">
+        נועה, ניר וקארין · מערכת שעות תשפ״ז
+    </footer>
+
+    <script>
+        const DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי'];
+        const SCHOOL = {"noa":{"periods":[{"num":0,"time":"07:45–08:25"},{"num":1,"time":"08:30–09:15"},{"num":2,"time":"09:15–10:00"},{"num":3,"time":"10:15–11:00"},{"num":4,"time":"11:00–11:45"},{"num":5,"time":"12:10–12:55"},{"num":6,"time":"12:55–13:40"},{"num":7,"time":"13:50–14:35"},{"num":8,"time":"14:35–15:20"},{"num":9,"time":"15:30–16:15"},{"num":10,"time":"16:15–17:00"}],"grid":{"ראשון":[null,{"subject":"אנגלית","teacher":"הירשמן אנה לנה","room":""},{"subject":"אנגלית","teacher":"הירשמן אנה לנה","room":""},{"subject":"אזרחות","teacher":"הראל צחי","room":""},{"subject":"אזרחות","teacher":"הראל צחי","room":""},{"subject":"ספרות","teacher":"שור זהבית","room":""},{"subject":"ספרות","teacher":"שור זהבית","room":""},{"subject":"ביולוגיה","teacher":"דמבינסקי רעות","room":""},{"subject":"ביולוגיה","teacher":"דמבינסקי רעות","room":""},{"subject":"ביולוגיה מעבדה","teacher":"דמבינסקי רעות","room":""},{"subject":"ביולוגיה מעבדה","teacher":"דמבינסקי רעות","room":""}],"שני":[{"subject":"מתמטיקה","teacher":"רוה ליאת","room":""},{"subject":"מתמטיקה","teacher":"רוה ליאת","room":""},{"subject":"מתמטיקה","teacher":"רוה ליאת","room":""},{"subject":"ספרות","teacher":"שור זהבית","room":""},{"subject":"אנגלית סיפרות","teacher":"הירשמן אנה לנה","room":""},{"subject":"חינוך גופני","teacher":"טבק פזית","room":""},{"subject":"כימיה","teacher":"רוזנברג נטליה","room":""},{"subject":"כימיה","teacher":"רוזנברג נטליה","room":""},null,null,null],"שלישי":[null,{"subject":"נחשון","teacher":"שור זהבית","room":""},{"subject":"נחשון","teacher":"שור זהבית","room":""},{"subject":"נחשון","teacher":"שור זהבית","room":""},{"subject":"נחשון","teacher":"שור זהבית","room":""},{"subject":"נחשון","teacher":"שור זהבית","room":""},{"subject":"נחשון","teacher":"שור זהבית","room":""},null,null,null,null],"רביעי":[null,{"subject":"כימיה","teacher":"רוזנברג נטליה","room":""},{"subject":"כימיה","teacher":"רוזנברג נטליה","room":""},{"subject":"חינוך גופני","teacher":"טבק פזית","room":""},{"subject":"חינוך וחברה","teacher":"שור זהבית","room":""},{"subject":"מתמטיקה","teacher":"רוה ליאת","room":""},{"subject":"מתמטיקה","teacher":"רוה ליאת","room":""},{"subject":"מתמטיקה","teacher":"רוה ליאת","room":""},null,null,null],"חמישי":[null,{"subject":"מתמטיקה","teacher":"רוה ליאת","room":""},{"subject":"מתמטיקה","teacher":"רוה ליאת","room":""},{"subject":"אנגלית","teacher":"הירשמן אנה לנה","room":""},{"subject":"אנגלית","teacher":"הירשמן אנה לנה","room":""},{"subject":"אזרחות","teacher":"הראל צחי","room":""},{"subject":"אזרחות","teacher":"הראל צחי","room":""},null,null,null,null],"שישי":[null,{"subject":"כימיה","teacher":"רוזנברג נטליה","room":""},{"subject":"כימיה","teacher":"רוזנברג נטליה","room":""},{"subject":"ביולוגיה","teacher":"דמבינסקי רעות","room":""},{"subject":"ביולוגיה","teacher":"דמבינסקי רעות","room":""},null,null,null,null,null,null]}},"nir":{"periods":[{"num":0,"time":"07:45–08:25"},{"num":1,"time":"08:30–09:15"},{"num":2,"time":"09:15–10:00"},{"num":3,"time":"10:15–11:00"},{"num":4,"time":"11:00–11:45"},{"num":5,"time":"12:10–12:55"},{"num":6,"time":"12:55–13:40"},{"num":7,"time":"13:50–14:35"},{"num":8,"time":"14:35–15:20"},{"num":9,"time":"15:30–16:15"},{"num":10,"time":"16:15–17:00"}],"grid":{"ראשון":[{"subject":"מתמטיקה","teacher":"יגרמן סיגל","room":""},{"subject":"מתמטיקה","teacher":"יגרמן סיגל","room":""},{"subject":"מתמטיקה","teacher":"יגרמן סיגל","room":""},{"subject":"לשון","teacher":"הר-פז פז","room":""},{"subject":"לשון","teacher":"הר-פז פז","room":""},{"subject":"מבוא לכימיה","teacher":"רוזנברג נטליה","room":""},{"subject":"הנדסת תוכנה","teacher":"כהן לילי","room":""},{"subject":"הנדסת תוכנה","teacher":"כהן לילי","room":""},{"subject":"הנדסת תוכנה","teacher":"כהן לילי","room":""},{"subject":"הנדסת תוכנה","teacher":"כהן לילי","room":""},null],"שני":[null,{"subject":"חינוך גופני","teacher":"רוקמן עמית","room":""},null,{"subject":"מבוא לכימיה","teacher":"רוזנברג נטליה","room":""},{"subject":"תנ\"ך","teacher":"מור עמרני שרית","room":""},{"subject":"אנגלית","teacher":"אבוזגלו בזק נוי","room":"י 4"},{"subject":"אנגלית","teacher":"אבוזגלו בזק נוי","room":"י 4"},{"subject":"היסטוריה","teacher":"שתקאי רועי","room":""},{"subject":"לשון","teacher":"הר-פז פז","room":""},null,null],"שלישי":[null,{"subject":"נחשון","teacher":"שתקאי רועי","room":""},{"subject":"נחשון","teacher":"שתקאי רועי","room":""},{"subject":"נחשון","teacher":"שתקאי רועי","room":""},{"subject":"נחשון","teacher":"שתקאי רועי","room":""},{"subject":"נחשון","teacher":"שתקאי רועי","room":""},{"subject":"נחשון","teacher":"שתקאי רועי","room":""},{"subject":"תנ\"ך","teacher":"מור עמרני שרית","room":""},null,null,null],"רביעי":[{"subject":"מתמטיקה","teacher":"יגרמן סיגל","room":""},{"subject":"מתמטיקה","teacher":"יגרמן סיגל","room":""},{"subject":"מתמטיקה","teacher":"יגרמן סיגל","room":""},{"subject":"אנגלית","teacher":"אבוזגלו בזק נוי","room":"י 4"},{"subject":"אנגלית","teacher":"אבוזגלו בזק נוי","room":"י 4"},{"subject":"תנ\"ך","teacher":"מור עמרני שרית","room":""},{"subject":"פיסיקה","teacher":"גרניט גילעד","room":""},{"subject":"פיסיקה","teacher":"גרניט גילעד","room":""},{"subject":"פיסיקה","teacher":"גרניט גילעד","room":""},null,null],"חמישי":[null,{"subject":"חינוך וחברה","teacher":"שתקאי רועי","room":""},{"subject":"חינוך גופני","teacher":"רוקמן עמית","room":""},{"subject":"מתמטיקה","teacher":"יגרמן סיגל","room":""},{"subject":"מתמטיקה","teacher":"יגרמן סיגל","room":""},{"subject":"היסטוריה","teacher":"שתקאי רועי","room":""},{"subject":"היסטוריה","teacher":"שתקאי רועי","room":""},{"subject":"הנדסת תוכנה","teacher":"כהן לילי","room":""},{"subject":"הנדסת תוכנה","teacher":"כהן לילי","room":""},{"subject":"הנדסת תוכנה","teacher":"כהן לילי","room":""},{"subject":"הנדסת תוכנה","teacher":"כהן לילי","room":""}],"שישי":[null,null,null,null,null,null,null,null,null,null,null]}},"karin":{"periods":[{"num":1,"time":"08:30–09:15"},{"num":2,"time":"09:15–10:00"},{"num":3,"time":"10:20–11:05"},{"num":4,"time":"11:05–11:45"},{"num":5,"time":"12:05–12:50"},{"num":6,"time":"12:50–13:30"},{"num":7,"time":"13:40–14:20"},{"num":8,"time":"14:20–15:05"}],"grid":{"ראשון":[{"subject":"של\"ח וידיעת הארץ","teacher":"שכטר דורון","room":""},{"subject":"ערבית","teacher":"חאג יחיא לנא","room":""},{"subject":"מתמטיקה","teacher":"","room":""},{"subject":"ניצוץ","teacher":"ירדן דוידי","room":""},{"subject":"מדעים","teacher":"גבאלי מרים","room":""},{"subject":"מדעים","teacher":"גבאלי מרים","room":""},{"subject":"הסטוריה","teacher":"דסאואר עידית","room":""},null],"שני":[{"subject":"מס\"ע","teacher":"בוארון ים עפרי","room":""},{"subject":"ערבית","teacher":"חאג יחיא לנא","room":""},{"subject":"אנגלית","teacher":"","room":""},{"subject":"אנגלית","teacher":"","room":""},{"subject":"חנ\"ג","teacher":"בוארון ים עפרי","room":""},{"subject":"מדעים","teacher":"גבאלי מרים","room":""},{"subject":"אומנות/מוסיקה/מחול","teacher":"","room":""},{"subject":"אומנות/מוסיקה/מחול","teacher":"","room":""}],"שלישי":[{"subject":"חוסן קש\"ת","teacher":"לופו קרן","room":""},{"subject":"עברית","teacher":"ברנהולץ הילה","room":""},{"subject":"929 על הפרק","teacher":"מוכתר אברהם","room":""},{"subject":"929 על הפרק","teacher":"מוכתר אברהם","room":""},{"subject":"מתמטיקה","teacher":"","room":""},{"subject":"מתמטיקה","teacher":"","room":""},{"subject":"חינוך","teacher":"לופו קרן","room":""},null],"רביעי":[{"subject":"אזרחות","teacher":"דסאואר עידית","room":""},{"subject":"חנ\"ג","teacher":"בוארון ים עפרי","room":""},{"subject":"הסטוריה","teacher":"דסאואר עידית","room":""},{"subject":"ניצוץ","teacher":"ירדן דוידי","room":""},{"subject":"אנגלית","teacher":"","room":""},{"subject":"אנגלית","teacher":"","room":""},{"subject":"מועדון ה-5/אבישג","teacher":"","room":""},null],"חמישי":[{"subject":"מתמטיקה","teacher":"","room":""},{"subject":"מתמטיקה","teacher":"","room":""},{"subject":"אומנות/מוסיקה/מחול","teacher":"","room":""},{"subject":"אומנות/מוסיקה/מחול","teacher":"","room":""},{"subject":"חינוך","teacher":"לופו קרן","room":""},{"subject":"מס\"ע","teacher":"בוארון ים עפרי","room":""},{"subject":"עברית","teacher":"ברנהולץ הילה","room":""},null],"שישי":[null,null,null,null,null,null,null,null]}}};
+        const KIDS = [
+            { id: 'noa', name: 'נועה', grade: 'י״ב 5', verb: 'מסיימת', head: 'bg-violet-700', nameClass: 'name-noa', chip: 'chip-noa' },
+            { id: 'nir', name: 'ניר', grade: 'י׳ 5', verb: 'מסיים', head: 'bg-blue-600', nameClass: 'name-nir', chip: 'chip-nir' },
+            { id: 'karin', name: 'קארין', grade: 'ט׳ 3', verb: 'מסיימת', head: 'bg-orange-600', nameClass: 'name-karin', chip: 'chip-karin' }
+        ];
+        const WEEK = [
+            { day: 'ראשון', ends: { noa: '17:00', nir: '16:15', karin: '14:20' }, sparky: 'קארין 14:20', babysitter: 'קארין' },
+            { day: 'שני', ends: { noa: '14:35', nir: '15:20', karin: '15:05' }, sparky: 'נועה 14:35 · קארין 15:05', babysitter: '' },
+            { day: 'שלישי', ends: { noa: '13:40', nir: '14:35', karin: '14:20' }, sparky: 'נועה 13:40', babysitter: 'נועה' },
+            { day: 'רביעי', ends: { noa: '14:35', nir: '15:20', karin: '14:20' }, sparky: 'קארין 14:20', babysitter: '' },
+            { day: 'חמישי', ends: { noa: '13:40', nir: '17:00', karin: '14:20' }, sparky: 'נועה 13:40', babysitter: '' },
+            { day: 'שישי', ends: { noa: '11:45', nir: '', karin: '' }, sparky: '', babysitter: '' }
+        ];
+        const EVENTS = [{"kid":"noa","start":"2026-10-08","end":"2026-10-08","title":"אסיפת הורים 19:00"},{"kid":"noa","start":"2026-10-09","end":"2026-10-09","title":"מבחן ביולוגיה 8:30"},{"kid":"noa","start":"2026-10-11","end":"2026-10-11","title":"אנגלית/בגרות פנימית בספרות"},{"kid":"noa","start":"2026-10-14","end":"2026-10-14","title":"מבחן כימיה 12:00"},{"kid":"noa","start":"2026-10-18","end":"2026-10-20","title":"מסע שנתי/רמת הגולן"},{"kid":"noa","start":"2026-11-05","end":"2026-11-05","title":"מבחן באנגלית"},{"kid":"noa","start":"2026-11-15","end":"2026-11-15","title":"מבחן באזרחות"},{"kid":"noa","start":"2026-11-18","end":"2026-11-18","title":"מתכונת אנגלית דבורה"},{"kid":"noa","start":"2026-11-22","end":"2026-11-22","title":"מבחן בביולוגיה"},{"kid":"noa","start":"2026-11-27","end":"2026-11-27","title":"מבחן בכימיה 9:00"},{"kid":"noa","start":"2026-11-30","end":"2026-11-30","title":"ספרות/הגשת מטלה"},{"kid":"noa","start":"2026-12-01","end":"2026-12-01","title":"בגרות אנגלית"},{"kid":"noa","start":"2026-12-02","end":"2026-12-02","title":"בגרות אנגלית"},{"kid":"noa","start":"2026-12-16","end":"2026-12-16","title":"מבחן במתמטיקה"},{"kid":"noa","start":"2027-01-11","end":"2027-01-11","title":"בגרות במתמטיקה"},{"kid":"noa","start":"2027-01-12","end":"2027-01-12","title":"בגרות במתמטיקה"},{"kid":"noa","start":"2027-01-14","end":"2027-01-14","title":"מבחן בספרות"},{"kid":"noa","start":"2027-01-20","end":"2027-01-20","title":"בגרות באנגלית"},{"kid":"noa","start":"2027-01-21","end":"2027-01-21","title":"בגרות באנגלית"},{"kid":"noa","start":"2027-01-28","end":"2027-01-28","title":"חלוקת תעודות מחצית"},{"kid":"noa","start":"2027-01-29","end":"2027-01-29","title":"מבחן ביולוגיה 10:00"},{"kid":"noa","start":"2027-02-03","end":"2027-02-03","title":"מבחן כימיה 10:00"},{"kid":"noa","start":"2027-02-05","end":"2027-02-05","title":"מבחן ביולוגיה 10:00"},{"kid":"noa","start":"2027-02-08","end":"2027-02-08","title":"בגרות חנ\"ג עיוני"},{"kid":"noa","start":"2027-02-15","end":"2027-02-15","title":"מבחן מתמטיקה 10:00"},{"kid":"noa","start":"2027-03-04","end":"2027-03-04","title":"מבחן אנגלית 10:00"},{"kid":"noa","start":"2027-03-12","end":"2027-03-12","title":"מבחן ביולוגיה 10:00"},{"kid":"noa","start":"2027-03-17","end":"2027-03-17","title":"מבחן כימיה 9:00"},{"kid":"noa","start":"2027-03-25","end":"2027-03-25","title":"מבחן בספרות 9:00"},{"kid":"noa","start":"2027-04-01","end":"2027-04-01","title":"מבחן באזרחות"},{"kid":"noa","start":"2027-04-04","end":"2027-04-04","title":"מתכונת בביולוגיה"},{"kid":"noa","start":"2027-04-05","end":"2027-04-05","title":"מתכונת בביולוגיה"},{"kid":"noa","start":"2027-04-12","end":"2027-04-12","title":"מתכונת 1 במתמטיקה"},{"kid":"noa","start":"2027-05-03","end":"2027-05-03","title":"מתכונת בביולוגיה/עיוני"},{"kid":"noa","start":"2027-05-09","end":"2027-05-09","title":"מתכונת 2 במתמטיקה"},{"kid":"noa","start":"2027-05-16","end":"2027-05-16","title":"מתכונת באנגלית"},{"kid":"noa","start":"2027-05-19","end":"2027-05-19","title":"מתכונת בספרות"},{"kid":"noa","start":"2027-05-23","end":"2027-05-23","title":"מתכונת באזרחות"},{"kid":"noa","start":"2027-05-26","end":"2027-05-26","title":"בגרות במתמטיקה"},{"kid":"noa","start":"2027-05-27","end":"2027-05-27","title":"בגרות במתמטיקה"},{"kid":"noa","start":"2027-06-01","end":"2027-06-01","title":"בגרות באנגלית"},{"kid":"noa","start":"2027-06-02","end":"2027-06-02","title":"בגרות ביולוגיה/מעבדה"},{"kid":"noa","start":"2027-06-13","end":"2027-06-13","title":"ארוע סיום שנה כיתתי"},{"kid":"noa","start":"2027-06-17","end":"2027-06-17","title":"בגרות בספרות"},{"kid":"noa","start":"2027-06-20","end":"2027-06-20","title":"חלוקת תעודות סוף שנה"},{"kid":"noa","start":"2027-06-24","end":"2027-06-24","title":"בגרות באזרחות"},{"kid":"noa","start":"2027-07-07","end":"2027-07-07","title":"בגרות מועד ב' אנגלית"},{"kid":"noa","start":"2027-07-08","end":"2027-07-08","title":"בגרות מועד ב' מתמטיקה"},{"kid":"nir","start":"2026-10-14","end":"2026-10-14","title":"בוחן באנגלית יומן קריאה"},{"kid":"nir","start":"2026-10-19","end":"2026-10-19","title":"בוחן שכבתי בלשון"},{"kid":"nir","start":"2026-10-25","end":"2026-10-25","title":"מבחן במתמטיקה"},{"kid":"nir","start":"2026-11-04","end":"2026-11-04","title":"מבחן אנסין אנגלית"},{"kid":"nir","start":"2026-11-19","end":"2026-11-19","title":"מבחן בהיסטוריה"},{"kid":"nir","start":"2026-11-26","end":"2026-11-26","title":"מבחנים אשכול ב' - פיזיקה (יפתח), הנדסת תוכנה"},{"kid":"nir","start":"2026-12-02","end":"2026-12-02","title":"מבחנים אשכול א' - פיזיקה (עמיר גלעד)"},{"kid":"nir","start":"2026-12-14","end":"2026-12-14","title":"מבחן בתנך"},{"kid":"nir","start":"2026-12-17","end":"2026-12-17","title":"מבחן במתמטיקה"},{"kid":"nir","start":"2026-12-23","end":"2026-12-23","title":"מבחן בלשון"},{"kid":"nir","start":"2026-12-28","end":"2026-12-28","title":"מבחן מועד ב באנגלית + מבחן מעבר"},{"kid":"nir","start":"2026-12-30","end":"2026-12-30","title":"מבחן מועד ב אשכול א - פיזיקה (עמיר גלעד)"},{"kid":"nir","start":"2026-12-31","end":"2026-12-31","title":"מבחן מועד ב אשכול ב' - פיזיקה (יפתח), הנדסת תוכנה"},{"kid":"nir","start":"2027-01-05","end":"2027-01-05","title":"מבחן מועד ב היסטוריה"},{"kid":"nir","start":"2027-01-06","end":"2027-01-06","title":"מבחן מועד ב לשון"},{"kid":"nir","start":"2027-01-07","end":"2027-01-07","title":"מבחן מועד ב תנך"}];
+        const HOLIDAYS = [{"name":"יום בחירות","start":"2026-10-27","end":"2026-10-27"},{"name":"חופשת חנוכה","start":"2026-11-06","end":"2026-11-12"},{"name":"חופשת פורים","start":"2027-03-23","end":"2027-03-24"},{"name":"חופשת פסח","start":"2027-04-13","end":"2027-04-28"},{"name":"חופשת יום העצמאות","start":"2027-05-12","end":"2027-05-12"},{"name":"חופשת שבועות","start":"2027-06-10","end":"2027-06-11"}];
+
+        const HIDE_DAYS = new Set(['noa-school', 'nir-school', 'karin-school', 'exams', 'holidays']);
+        let activeFilter = 'all';
+        let selectedDay = jsDayToHebrew();
+        if (!DAYS.includes(selectedDay)) selectedDay = 'ראשון';
+
+        function jsDayToHebrew() {
+            return ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'][new Date().getDay()];
+        }
+
+        function todayAtMidnight() {
+            const d = new Date();
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+
+        function parseISO(s) {
+            const [y, m, d] = s.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        function fmtDate(s) {
+            const [y, m, d] = s.split('-');
+            return `${d}.${m}.${y}`;
+        }
+
+        function eventStatus(ev) {
+            const now = todayAtMidnight();
+            const start = parseISO(ev.start);
+            const end = parseISO(ev.end || ev.start);
+            if (now >= start && now <= end) return 'current';
+            if (now < start) return 'future';
+            return 'past';
+        }
+
+        function kidById(id) {
+            return KIDS.find(k => k.id === id);
+        }
+
+        function visibleKids() {
+            if (activeFilter === 'noa' || activeFilter === 'nir' || activeFilter === 'karin') {
+                return KIDS.filter(k => k.id === activeFilter);
+            }
+            return KIDS;
+        }
+
+        function lessonCss(subject) {
+            if (subject.includes('אנגלית')) return 'tt-subj-eng';
+            if (/מתמטיקה|הנדסת|פיסיקה|פיזיקה/.test(subject)) return 'tt-subj-math';
+            if (/כימיה|ביולוגיה|מדעים|מבוא/.test(subject)) return 'tt-subj-sci';
+            if (/חנ״ג|חנ"ג|חינוך גופני|של"ח|של״ח/.test(subject)) return 'tt-subj-pe';
+            if (/תנ"ך|תנ״ך|תנך|אזרחות|היסטוריה|הסטוריה/.test(subject)) return 'tt-subj-bible';
+            if (/אומנות|מוסיקה|מחול/.test(subject)) return 'tt-subj-art';
+            if (/ספרות|לשון|עברית|ערבית/.test(subject)) return 'tt-subj-lang';
+            return 'tt-subj-values';
+        }
+
+        function renderDaysBar() {
+            const todayName = jsDayToHebrew();
+            const bar = document.getElementById('days-bar');
+            bar.innerHTML = '';
+            if (HIDE_DAYS.has(activeFilter)) bar.classList.add('opacity-40', 'pointer-events-none');
+            else bar.classList.remove('opacity-40', 'pointer-events-none');
+            DAYS.forEach(day => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `day-nav-btn touch rounded-xl border text-center px-1 py-2 text-[11px] sm:text-xs font-bold transition-all ${
+                    day === selectedDay ? 'active' : 'bg-white/80 text-stone-700 border-stone-200 hover:bg-stone-100'
+                }`;
+                btn.innerHTML = `<span class="block leading-tight">${day}</span>${
+                    day === todayName ? '<span class="block text-[9px] font-bold opacity-80 mt-0.5">היום</span>' : '<span class="block text-[9px] opacity-0 mt-0.5">-</span>'
+                }`;
+                btn.onclick = () => { selectedDay = day; render(); };
+                bar.appendChild(btn);
+            });
+        }
+
+        function lessonsFor(kidId, day) {
+            const pack = SCHOOL[kidId];
+            return pack.periods.map((period, idx) => {
+                const lesson = (pack.grid[day] || [])[idx];
+                return lesson ? { period, lesson } : null;
+            }).filter(Boolean);
+        }
+
+        function kidColumn(kid, dayInfo) {
+            const end = dayInfo.ends[kid.id];
+            const rows = lessonsFor(kid.id, dayInfo.day).map(({ period, lesson }) => `
+                <div class="border-t border-stone-100 py-1.5">
+                    <div class="flex items-baseline justify-between gap-2">
+                        <span class="font-bold text-[13px] leading-tight">${lesson.subject}</span>
+                        <span class="text-[10px] font-semibold text-stone-500 shrink-0" dir="ltr">${period.time}</span>
+                    </div>
+                    ${lesson.teacher ? `<div class="text-[11px] text-stone-600 leading-tight">${lesson.teacher}${lesson.room ? ` · חדר ${lesson.room}` : ''}</div>` : ''}
+                </div>
+            `).join('');
+            return `
+                <section class="rounded-2xl border ${kid.chip} p-3">
+                    <div class="flex items-start justify-between gap-2 mb-1">
+                        <div>
+                            <h3 class="text-base font-extrabold ${kid.nameClass}">${kid.name}</h3>
+                            <p class="text-[11px] opacity-70">${kid.grade}</p>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-[10px] font-bold opacity-70">סיום</div>
+                            <div class="text-sm font-extrabold" dir="ltr">${end || '—'}</div>
+                        </div>
+                    </div>
+                    ${rows || '<p class="text-xs opacity-70 pt-2">אין לימודים</p>'}
+                </section>
+            `;
+        }
+
+        function todayEventsHtml() {
+            if (selectedDay !== jsDayToHebrew()) return '';
+            const hits = EVENTS.filter(ev => eventStatus(ev) === 'current');
+            if (!hits.length) return '';
+            return `<div class="rounded-2xl border border-amber-300 bg-amber-50 p-3 space-y-1">
+                <h3 class="text-sm font-extrabold text-amber-900">היום ביומן</h3>
+                ${hits.map(ev => {
+                    const kid = kidById(ev.kid);
+                    return `<p class="text-sm"><span class="font-extrabold ${kid.nameClass}">${kid.name}</span> · ${ev.title}</p>`;
+                }).join('')}
+            </div>`;
+        }
+
+        function dutyHtml(dayInfo) {
+            const kids = visibleKids();
+            const blocks = [];
+            if (dayInfo.sparky && kids.some(k => dayInfo.sparky.includes(k.name))) {
+                blocks.push(`<div class="rounded-xl border chip-duty px-3 py-2 text-sm"><span class="font-extrabold">תורנות ספארקי</span> · ${dayInfo.sparky}</div>`);
+            }
+            if (dayInfo.babysitter && kids.some(k => dayInfo.babysitter === k.name)) {
+                blocks.push(`<div class="rounded-xl border chip-duty px-3 py-2 text-sm"><span class="font-extrabold">בייביסיטר חנוש</span> · ${dayInfo.babysitter}</div>`);
+            }
+            return blocks.length ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${blocks.join('')}</div>` : '';
+        }
+
+        function renderDay() {
+            const dayInfo = WEEK.find(d => d.day === selectedDay);
+            const isToday = selectedDay === jsDayToHebrew();
+            const columns = visibleKids().map(kid => kidColumn(kid, dayInfo)).join('');
+            return `
+                <article class="space-y-3">
+                    ${todayEventsHtml()}
+                    <div class="bg-white/95 rounded-2xl border border-stone-200 p-3.5 sm:p-5 ${isToday ? 'ring-2 ring-slate-600 shadow-lg shadow-slate-900/10' : 'shadow-sm'}">
+                        <div class="flex items-center gap-2 mb-3">
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-stone-900">יום ${dayInfo.day}</h2>
+                            ${isToday ? '<span class="text-[10px] font-bold bg-slate-700 text-white px-2 py-0.5 rounded-full">היום</span>' : ''}
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-2.5">${columns}</div>
+                    </div>
+                    ${dutyHtml(dayInfo)}
+                </article>
+            `;
+        }
+
+        function renderSchool(kidId) {
+            const kid = kidById(kidId);
+            const pack = SCHOOL[kidId];
+            const todayName = jsDayToHebrew();
+            const head = DAYS.map(d => `
+                <th class="p-1.5 text-[11px] sm:text-xs font-extrabold border border-stone-200 ${kid.head} text-white ${d === todayName ? 'ring-2 ring-inset ring-amber-300' : ''}">
+                    ${d}${d === todayName ? '<div class="text-[9px] font-bold opacity-90">היום</div>' : ''}
+                </th>
+            `).join('');
+            const rows = pack.periods.map((period, idx) => {
+                const cells = DAYS.map(d => {
+                    const lesson = (pack.grid[d] || [])[idx];
+                    if (!lesson) return `<td class="tt-cell p-1 border border-stone-200 tt-subj-empty text-[10px] text-center align-top">—</td>`;
+                    return `<td class="tt-cell p-1 border border-stone-200 ${lessonCss(lesson.subject)} align-top">
+                        <div class="font-bold text-[10px] sm:text-[11px] leading-tight">${lesson.subject}</div>
+                        ${lesson.teacher ? `<div class="text-[9px] opacity-70 leading-tight mt-0.5">${lesson.teacher}</div>` : ''}
+                        ${lesson.room ? `<div class="text-[9px] opacity-70 leading-tight">חדר ${lesson.room}</div>` : ''}
+                    </td>`;
+                }).join('');
+                return `<tr>
+                    <th class="p-1.5 border border-stone-200 bg-slate-100 text-[10px] sm:text-xs font-bold whitespace-nowrap align-top">
+                        <div>${period.num}</div>
+                        ${period.time ? `<div class="font-semibold opacity-70" dir="ltr">${period.time}</div>` : ''}
+                    </th>
+                    ${cells}
+                </tr>`;
+            }).join('');
+            const note = kidId === 'karin' ? 'שעות הצלצולים של קארין שונות מנועה וניר.' : '';
+            return `
+                <article class="bg-white/95 rounded-2xl border border-stone-200 p-3 sm:p-4 shadow-sm space-y-3">
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-extrabold ${kid.nameClass}">מערכת שעות · ${kid.name}</h2>
+                        <p class="text-xs text-stone-500">${kid.grade} · תיכון היובל</p>
+                    </div>
+                    ${note ? `<p class="text-[11px] text-stone-500">${note}</p>` : ''}
+                    <div class="overflow-x-auto -mx-1 px-1">
+                        <table class="w-full min-w-[720px] border-collapse text-right">
+                            <thead>
+                                <tr>
+                                    <th class="p-1.5 text-[11px] font-extrabold border border-stone-200 bg-slate-700 text-white">שיעור</th>
+                                    ${head}
+                                </tr>
+                            </thead>
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>
+                </article>
+            `;
+        }
+
+        function renderEvents() {
+            const enriched = EVENTS.map(ev => ({ ...ev, status: eventStatus(ev) }))
+                .sort((a, b) => parseISO(a.start) - parseISO(b.start));
+            const next = enriched.find(ev => ev.status !== 'past');
+            const cards = enriched.map(ev => {
+                const kid = kidById(ev.kid);
+                const isNext = next && next.start === ev.start && next.title === ev.title && next.kid === ev.kid;
+                let frame = 'border-stone-200 bg-white/95';
+                let badge = '';
+                if (ev.status === 'current') {
+                    frame = 'border-amber-500 bg-amber-50 ring-2 ring-amber-400/40';
+                    badge = '<span class="text-[10px] font-bold bg-amber-600 text-white px-2 py-0.5 rounded-full">היום</span>';
+                } else if (isNext) {
+                    const days = Math.round((parseISO(ev.start) - todayAtMidnight()) / 86400000);
+                    frame = 'border-amber-300 bg-amber-50/60';
+                    badge = `<span class="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full">הקרוב · בעוד ${days} ימים</span>`;
+                } else if (ev.status === 'past') {
+                    frame = 'border-stone-200 bg-stone-50 opacity-60';
+                    badge = '<span class="text-[10px] font-bold bg-stone-200 text-stone-600 px-2 py-0.5 rounded-full">עבר</span>';
+                }
+                const when = ev.end && ev.end !== ev.start ? `${fmtDate(ev.start)} – ${fmtDate(ev.end)}` : fmtDate(ev.start);
+                return `
+                    <article class="rounded-2xl border ${frame} p-3 shadow-sm">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-sm font-extrabold text-stone-900">${ev.title}</h3>
+                            ${badge}
+                        </div>
+                        <div class="mt-1.5 flex items-center justify-between gap-2 text-xs">
+                            <span class="font-extrabold ${kid.nameClass}">${kid.name}</span>
+                            <span class="font-bold text-stone-600" dir="ltr">${when}</span>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+            return `
+                <section class="space-y-3">
+                    <div class="bg-white/95 rounded-2xl border border-amber-200 p-3.5 sm:p-4 shadow-sm">
+                        <h2 class="text-lg sm:text-xl font-extrabold text-amber-800">בחינות ואירועים</h2>
+                        <p class="text-xs text-stone-500 mt-0.5">נועה וניר · לפי הגיליון</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">${cards}</div>
+                </section>
+            `;
+        }
+
+        function holidayStatus(h) {
+            const now = todayAtMidnight();
+            const start = parseISO(h.start);
+            const end = parseISO(h.end);
+            if (now >= start && now <= end) return 'current';
+            if (now < start) return 'future';
+            return 'past';
+        }
+
+        function renderHolidays() {
+            const enriched = HOLIDAYS.map(h => ({ ...h, status: holidayStatus(h) }));
+            const next = enriched.find(h => h.status === 'future');
+            const cards = enriched.map(h => {
+                let frame = 'border-stone-200 bg-white/95';
+                let badge = '';
+                if (h.status === 'current') {
+                    frame = 'border-emerald-500 bg-emerald-50 ring-2 ring-emerald-500/40';
+                    badge = '<span class="text-[10px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded-full">עכשיו</span>';
+                } else if (next && next.name === h.name) {
+                    const days = Math.round((parseISO(h.start) - todayAtMidnight()) / 86400000);
+                    frame = 'border-emerald-300 bg-emerald-50/50';
+                    badge = `<span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">הקרוב · בעוד ${days} ימים</span>`;
+                } else if (h.status === 'past') {
+                    frame = 'border-stone-200 bg-stone-50 opacity-60';
+                    badge = '<span class="text-[10px] font-bold bg-stone-200 text-stone-600 px-2 py-0.5 rounded-full">עבר</span>';
+                }
+                const when = h.start === h.end ? fmtDate(h.start) : `${fmtDate(h.start)} – ${fmtDate(h.end)}`;
+                return `
+                    <article class="rounded-2xl border ${frame} p-3 shadow-sm space-y-2">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 class="text-sm sm:text-base font-extrabold text-stone-900">${h.name}</h3>
+                            ${badge}
+                        </div>
+                        <p class="text-xs font-extrabold text-emerald-800" dir="ltr">${when}</p>
+                    </article>
+                `;
+            }).join('');
+            return `
+                <section class="space-y-3">
+                    <div class="bg-white/95 rounded-2xl border border-emerald-200 p-3.5 sm:p-4 shadow-sm">
+                        <h2 class="text-lg sm:text-xl font-extrabold text-emerald-800">לוח חופשות · תשפ״ז</h2>
+                        <p class="text-xs text-stone-500 mt-0.5">תיכון היובל</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">${cards}</div>
+                </section>
+            `;
+        }
+
+        function render() {
+            document.getElementById('today-badge').textContent = `היום: ${jsDayToHebrew()}`;
+            renderDaysBar();
+            const root = document.getElementById('schedule-root');
+            if (activeFilter === 'noa-school') root.innerHTML = renderSchool('noa');
+            else if (activeFilter === 'nir-school') root.innerHTML = renderSchool('nir');
+            else if (activeFilter === 'karin-school') root.innerHTML = renderSchool('karin');
+            else if (activeFilter === 'exams') root.innerHTML = renderEvents();
+            else if (activeFilter === 'holidays') root.innerHTML = renderHolidays();
+            else root.innerHTML = renderDay();
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeFilter = btn.dataset.filter;
+                render();
+            });
+        });
+
+        render();
+    </script>
+</body>
+</html>
