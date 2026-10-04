@@ -29,17 +29,17 @@
         .filter-btn.active[data-filter="all"] { background: #334155; color: #fff; border-color: #334155; }
         .filter-btn.filter-noa { background: #f3e8ff; color: #5b21b6; border-color: #d8b4fe; }
         .filter-btn.active[data-filter="noa"] { background: #7c3aed; color: #fff; border-color: #7c3aed; }
-        .filter-btn.active[data-filter="noa-school"] { background: #6d28d9; color: #fff; border-color: #6d28d9; }
+        .filter-btn.active[data-filter="noa-school"],
+        .filter-btn.active[data-filter="noa-exams"] { background: #6d28d9; color: #fff; border-color: #6d28d9; }
         .filter-btn.filter-nir { background: #dbeafe; color: #1e3a8a; border-color: #93c5fd; }
         .filter-btn.active[data-filter="nir"] { background: #2563eb; color: #fff; border-color: #2563eb; }
-        .filter-btn.active[data-filter="nir-school"] { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
+        .filter-btn.active[data-filter="nir-school"],
+        .filter-btn.active[data-filter="nir-exams"] { background: #1d4ed8; color: #fff; border-color: #1d4ed8; }
         .filter-btn.filter-karin { background: #ffedd5; color: #9a3412; border-color: #fdba74; }
         .filter-btn.active[data-filter="karin"] { background: #ea580c; color: #fff; border-color: #ea580c; }
         .filter-btn.active[data-filter="karin-school"] { background: #c2410c; color: #fff; border-color: #c2410c; }
         .filter-btn.filter-duties { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
         .filter-btn.active[data-filter="duties"] { background: #d97706; color: #fff; border-color: #d97706; }
-        .filter-btn.filter-exams { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
-        .filter-btn.active[data-filter="exams"] { background: #d97706; color: #fff; border-color: #d97706; }
         .filter-btn.filter-holidays { background: #ecfdf5; color: #065f46; border-color: #6ee7b7; }
         .filter-btn.active[data-filter="holidays"] { background: #059669; color: #fff; border-color: #059669; }
         .chip-noa { background: #f3e8ff; color: #5b21b6; border-color: #d8b4fe; }
@@ -82,7 +82,8 @@
                 <button type="button" class="filter-btn filter-nir shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="nir-school">מערכת ניר</button>
                 <button type="button" class="filter-btn filter-karin shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="karin-school">מערכת קארין</button>
                 <button type="button" class="filter-btn filter-duties shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="duties">תורנויות</button>
-                <button type="button" class="filter-btn filter-exams shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="exams">בחינות</button>
+                <button type="button" class="filter-btn filter-noa shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="noa-exams">בחינות נועה</button>
+                <button type="button" class="filter-btn filter-nir shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="nir-exams">בחינות ניר</button>
                 <button type="button" class="filter-btn filter-holidays shrink-0 px-3 py-1.5 rounded-full border text-xs font-bold touch" data-filter="holidays">חופשות</button>
             </div>
         </div>
@@ -113,7 +114,7 @@
         const EVENTS = [{"kid":"noa","start":"2026-10-08","end":"2026-10-08","title":"אסיפת הורים 19:00"},{"kid":"noa","start":"2026-10-09","end":"2026-10-09","title":"מבחן ביולוגיה 8:30"},{"kid":"noa","start":"2026-10-11","end":"2026-10-11","title":"אנגלית/בגרות פנימית בספרות"},{"kid":"noa","start":"2026-10-14","end":"2026-10-14","title":"מבחן כימיה 12:00"},{"kid":"noa","start":"2026-10-18","end":"2026-10-20","title":"מסע שנתי/רמת הגולן"},{"kid":"noa","start":"2026-11-05","end":"2026-11-05","title":"מבחן באנגלית"},{"kid":"noa","start":"2026-11-15","end":"2026-11-15","title":"מבחן באזרחות"},{"kid":"noa","start":"2026-11-18","end":"2026-11-18","title":"מתכונת אנגלית דבורה"},{"kid":"noa","start":"2026-11-22","end":"2026-11-22","title":"מבחן בביולוגיה"},{"kid":"noa","start":"2026-11-27","end":"2026-11-27","title":"מבחן בכימיה 9:00"},{"kid":"noa","start":"2026-11-30","end":"2026-11-30","title":"ספרות/הגשת מטלה"},{"kid":"noa","start":"2026-12-01","end":"2026-12-01","title":"בגרות אנגלית"},{"kid":"noa","start":"2026-12-02","end":"2026-12-02","title":"בגרות אנגלית"},{"kid":"noa","start":"2026-12-16","end":"2026-12-16","title":"מבחן במתמטיקה"},{"kid":"noa","start":"2027-01-11","end":"2027-01-11","title":"בגרות במתמטיקה"},{"kid":"noa","start":"2027-01-12","end":"2027-01-12","title":"בגרות במתמטיקה"},{"kid":"noa","start":"2027-01-14","end":"2027-01-14","title":"מבחן בספרות"},{"kid":"noa","start":"2027-01-20","end":"2027-01-20","title":"בגרות באנגלית"},{"kid":"noa","start":"2027-01-21","end":"2027-01-21","title":"בגרות באנגלית"},{"kid":"noa","start":"2027-01-28","end":"2027-01-28","title":"חלוקת תעודות מחצית"},{"kid":"noa","start":"2027-01-29","end":"2027-01-29","title":"מבחן ביולוגיה 10:00"},{"kid":"noa","start":"2027-02-03","end":"2027-02-03","title":"מבחן כימיה 10:00"},{"kid":"noa","start":"2027-02-05","end":"2027-02-05","title":"מבחן ביולוגיה 10:00"},{"kid":"noa","start":"2027-02-08","end":"2027-02-08","title":"בגרות חנ\"ג עיוני"},{"kid":"noa","start":"2027-02-15","end":"2027-02-15","title":"מבחן מתמטיקה 10:00"},{"kid":"noa","start":"2027-03-04","end":"2027-03-04","title":"מבחן אנגלית 10:00"},{"kid":"noa","start":"2027-03-12","end":"2027-03-12","title":"מבחן ביולוגיה 10:00"},{"kid":"noa","start":"2027-03-17","end":"2027-03-17","title":"מבחן כימיה 9:00"},{"kid":"noa","start":"2027-03-25","end":"2027-03-25","title":"מבחן בספרות 9:00"},{"kid":"noa","start":"2027-04-01","end":"2027-04-01","title":"מבחן באזרחות"},{"kid":"noa","start":"2027-04-04","end":"2027-04-04","title":"מתכונת בביולוגיה"},{"kid":"noa","start":"2027-04-05","end":"2027-04-05","title":"מתכונת בביולוגיה"},{"kid":"noa","start":"2027-04-12","end":"2027-04-12","title":"מתכונת 1 במתמטיקה"},{"kid":"noa","start":"2027-05-03","end":"2027-05-03","title":"מתכונת בביולוגיה/עיוני"},{"kid":"noa","start":"2027-05-09","end":"2027-05-09","title":"מתכונת 2 במתמטיקה"},{"kid":"noa","start":"2027-05-16","end":"2027-05-16","title":"מתכונת באנגלית"},{"kid":"noa","start":"2027-05-19","end":"2027-05-19","title":"מתכונת בספרות"},{"kid":"noa","start":"2027-05-23","end":"2027-05-23","title":"מתכונת באזרחות"},{"kid":"noa","start":"2027-05-26","end":"2027-05-26","title":"בגרות במתמטיקה"},{"kid":"noa","start":"2027-05-27","end":"2027-05-27","title":"בגרות במתמטיקה"},{"kid":"noa","start":"2027-06-01","end":"2027-06-01","title":"בגרות באנגלית"},{"kid":"noa","start":"2027-06-02","end":"2027-06-02","title":"בגרות ביולוגיה/מעבדה"},{"kid":"noa","start":"2027-06-13","end":"2027-06-13","title":"ארוע סיום שנה כיתתי"},{"kid":"noa","start":"2027-06-17","end":"2027-06-17","title":"בגרות בספרות"},{"kid":"noa","start":"2027-06-20","end":"2027-06-20","title":"חלוקת תעודות סוף שנה"},{"kid":"noa","start":"2027-06-24","end":"2027-06-24","title":"בגרות באזרחות"},{"kid":"noa","start":"2027-07-07","end":"2027-07-07","title":"בגרות מועד ב' אנגלית"},{"kid":"noa","start":"2027-07-08","end":"2027-07-08","title":"בגרות מועד ב' מתמטיקה"},{"kid":"nir","start":"2026-10-14","end":"2026-10-14","title":"בוחן באנגלית יומן קריאה"},{"kid":"nir","start":"2026-10-19","end":"2026-10-19","title":"בוחן שכבתי בלשון"},{"kid":"nir","start":"2026-10-25","end":"2026-10-25","title":"מבחן במתמטיקה"},{"kid":"nir","start":"2026-11-04","end":"2026-11-04","title":"מבחן אנסין אנגלית"},{"kid":"nir","start":"2026-11-19","end":"2026-11-19","title":"מבחן בהיסטוריה"},{"kid":"nir","start":"2026-11-26","end":"2026-11-26","title":"מבחנים אשכול ב' - פיזיקה (יפתח), הנדסת תוכנה"},{"kid":"nir","start":"2026-12-02","end":"2026-12-02","title":"מבחנים אשכול א' - פיזיקה (עמיר גלעד)"},{"kid":"nir","start":"2026-12-14","end":"2026-12-14","title":"מבחן בתנך"},{"kid":"nir","start":"2026-12-17","end":"2026-12-17","title":"מבחן במתמטיקה"},{"kid":"nir","start":"2026-12-23","end":"2026-12-23","title":"מבחן בלשון"},{"kid":"nir","start":"2026-12-28","end":"2026-12-28","title":"מבחן מועד ב באנגלית + מבחן מעבר"},{"kid":"nir","start":"2026-12-30","end":"2026-12-30","title":"מבחן מועד ב אשכול א - פיזיקה (עמיר גלעד)"},{"kid":"nir","start":"2026-12-31","end":"2026-12-31","title":"מבחן מועד ב אשכול ב' - פיזיקה (יפתח), הנדסת תוכנה"},{"kid":"nir","start":"2027-01-05","end":"2027-01-05","title":"מבחן מועד ב היסטוריה"},{"kid":"nir","start":"2027-01-06","end":"2027-01-06","title":"מבחן מועד ב לשון"},{"kid":"nir","start":"2027-01-07","end":"2027-01-07","title":"מבחן מועד ב תנך"}];
         const HOLIDAYS = [{"name":"יום בחירות","start":"2026-10-27","end":"2026-10-27"},{"name":"חופשת חנוכה","start":"2026-11-06","end":"2026-11-12"},{"name":"חופשת פורים","start":"2027-03-23","end":"2027-03-24"},{"name":"חופשת פסח","start":"2027-04-13","end":"2027-04-28"},{"name":"חופשת יום העצמאות","start":"2027-05-12","end":"2027-05-12"},{"name":"חופשת שבועות","start":"2027-06-10","end":"2027-06-11"}];
 
-        const HIDE_DAYS = new Set(['noa-school', 'nir-school', 'karin-school', 'duties', 'exams', 'holidays']);
+        const HIDE_DAYS = new Set(['noa-school', 'nir-school', 'karin-school', 'duties', 'noa-exams', 'nir-exams', 'holidays']);
         let activeFilter = 'all';
         let selectedDay = jsDayToHebrew();
         if (!DAYS.includes(selectedDay)) selectedDay = 'ראשון';
@@ -350,13 +351,14 @@
             `;
         }
 
-        function renderEvents() {
-            const enriched = EVENTS.map(ev => ({ ...ev, status: eventStatus(ev) }))
+        function renderEvents(kidId) {
+            const kid = kidById(kidId);
+            const enriched = EVENTS.filter(ev => ev.kid === kidId)
+                .map(ev => ({ ...ev, status: eventStatus(ev) }))
                 .sort((a, b) => parseISO(a.start) - parseISO(b.start));
             const next = enriched.find(ev => ev.status !== 'past');
             const cards = enriched.map(ev => {
-                const kid = kidById(ev.kid);
-                const isNext = next && next.start === ev.start && next.title === ev.title && next.kid === ev.kid;
+                const isNext = next && next.start === ev.start && next.title === ev.title;
                 let frame = 'border-stone-200 bg-white/95';
                 let badge = '';
                 if (ev.status === 'current') {
@@ -377,18 +379,15 @@
                             <h3 class="text-sm font-extrabold text-stone-900">${ev.title}</h3>
                             ${badge}
                         </div>
-                        <div class="mt-1.5 flex items-center justify-between gap-2 text-xs">
-                            <span class="font-extrabold ${kid.nameClass}">${kid.name}</span>
-                            <span class="font-bold text-stone-600" dir="ltr">${when}</span>
-                        </div>
+                        <p class="mt-1.5 text-xs font-bold text-stone-600" dir="ltr">${when}</p>
                     </article>
                 `;
             }).join('');
             return `
                 <section class="space-y-3">
-                    <div class="bg-white/95 rounded-2xl border border-amber-200 p-3.5 sm:p-4 shadow-sm">
-                        <h2 class="text-lg sm:text-xl font-extrabold text-amber-800">בחינות ואירועים</h2>
-                        <p class="text-xs text-stone-500 mt-0.5">נועה וניר · לפי הגיליון</p>
+                    <div class="bg-white/95 rounded-2xl border border-stone-200 p-3.5 sm:p-4 shadow-sm">
+                        <h2 class="text-lg sm:text-xl font-extrabold ${kid.nameClass}">בחינות ואירועים · ${kid.name}</h2>
+                        <p class="text-xs text-stone-500 mt-0.5">${kid.grade}</p>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">${cards}</div>
                 </section>
@@ -451,7 +450,8 @@
             else if (activeFilter === 'nir-school') root.innerHTML = renderSchool('nir');
             else if (activeFilter === 'karin-school') root.innerHTML = renderSchool('karin');
             else if (activeFilter === 'duties') root.innerHTML = renderDuties();
-            else if (activeFilter === 'exams') root.innerHTML = renderEvents();
+            else if (activeFilter === 'noa-exams') root.innerHTML = renderEvents('noa');
+            else if (activeFilter === 'nir-exams') root.innerHTML = renderEvents('nir');
             else if (activeFilter === 'holidays') root.innerHTML = renderHolidays();
             else root.innerHTML = renderDay();
         }
